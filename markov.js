@@ -1,16 +1,4 @@
 /** Textual markov chain generator */
-const fs = require('fs');
-const process = require('process');
-
-// Function to read text from file.
-function getWordsFromText(filePath) {
-  try{
-    return fs.readFileSync(filePath, 'utf-8');
-  } catch (err) {
-    return console.log(`Failed to read file path: ${err}`);
-  }
-  
-}
 
 class MarkovMachine {
 
@@ -30,10 +18,21 @@ class MarkovMachine {
     makeChains() {
       // TODO
       // logic: Start with first word, iterate through as key and mark every word that comes directly after it.
-      // When you reach the end, loop through to the next word as the new key, but if already recorded as a key, skip
-      // Finally, all words ending a sentence must have a null item associated with its key.
+      // Make sure each key is only stored once, and every word that appears after it is collected.
+      // Finally, all words ending a text must have a null item associated with its key.
+      this.chains = new Map(); // Initial storage
 
-      this.words
+      for (let i = 0; i < this.words.length; i++) {
+        let word = this.words[i];
+        let next = this.words[i + 1] || null; // grabs next word or makes it null to show end of text.
+
+        if(this.chains.has(word)) {
+          this.chains.get(word).push(next);
+        } else {
+          this.chains.set(word, [next]);
+        }
+      }
+
     }
   
   
@@ -41,5 +40,25 @@ class MarkovMachine {
   
     makeText(numWords = 100) {
       // TODO
+      let output = [];
+
+      let keys = Array.from(this.chains.keys());
+      let key = this._choice(keys); // random starting
+
+      while(output.length < numWords && word !== null) {
+        output.push(key);
+        key = this._choice(this.chains.get(key)); // Choose a new key from available linked words at random.
+      }
+
+      return output.join(" ");
+
+    }
+
+    _choice(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
     }
   }
+
+  module.exports = {
+    MarkovMachine,
+  };
