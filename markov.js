@@ -1,5 +1,16 @@
 /** Textual markov chain generator */
+const fs = require('fs');
+const process = require('process');
 
+// Function to read text from file.
+function getWordsFromText(filePath) {
+  try{
+    return fs.readFileSync(filePath, 'utf-8');
+  } catch (err) {
+    return console.log(`Failed to read file path: ${err}`);
+  }
+  
+}
 
 class MarkovMachine {
 
@@ -18,6 +29,11 @@ class MarkovMachine {
   
     makeChains() {
       // TODO
+      // logic: Start with first word, iterate through as key and mark every word that comes directly after it.
+      // When you reach the end, loop through to the next word as the new key, but if already recorded as a key, skip
+      // Finally, all words ending a sentence must have a null item associated with its key.
+
+      this.words
     }
   
   
